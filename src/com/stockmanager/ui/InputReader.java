@@ -34,6 +34,9 @@ public class InputReader {
 
             String input = scanner.nextLine().trim();
 
+            // Permet d'accepter 49,99 au lieu de seulement 49.99
+            input = input.replace(",", ".");
+
             try {
                 return Double.parseDouble(input);
             } catch (NumberFormatException exception) {
