@@ -1,10 +1,13 @@
 package com.stockmanager.service;
 
-import java.util.List;
-
+import com.stockmanager.exception.NotFoundException;
+import com.stockmanager.exception.UnauthorizedException;
+import com.stockmanager.exception.ValidationException;
 import com.stockmanager.model.Product;
 import com.stockmanager.model.User;
 import com.stockmanager.repository.ProductRepository;
+
+import java.util.List;
 
 public class ProductService {
     private ProductRepository productRepository;
@@ -20,68 +23,65 @@ public class ProductService {
     }
 
     public Product getProductById(int id) {
-        return productRepository.findById(id);
+        Product product = productRepository.findById(id);
+
+        if (product == null) {
+            throw new NotFoundException("Produit introuvable.");
+        }
+
+        return product;
     }
 
     public Product createProduct(String name, double price, int stockQuantity) {
-        if (!currentUserIsAdmin()) {
-            return null;
-        }
-
-        if (!isValidProductData(name, price, stockQuantity)) {
-            return null;
-        }
+        requireAdmin();
+        validateProductData(name, price, stockQuantity);
 
         return productRepository.create(name, price, stockQuantity);
     }
 
-    public boolean updateProduct(int id, String name, double price, int stockQuantity) {
-        if (!currentUserIsAdmin()) {
-            return false;
-        }
+    public void updateProduct(int id, String name, double price, int stockQuantity) {
+        requireAdmin();
 
         Product product = productRepository.findById(id);
 
         if (product == null) {
-            return false;
+            throw new NotFoundException("Produit introuvable.");
         }
 
-        if (!isValidProductData(name, price, stockQuantity)) {
-            return false;
-        }
+        validateProductData(name, price, stockQuantity);
 
         product.update(name, price, stockQuantity);
-
-        return true;
     }
 
-    public boolean deleteProduct(int id) {
-        if (!currentUserIsAdmin()) {
-            return false;
+    public void deleteProduct(int id) {
+        requireAdmin();
+
+        boolean deleted = productRepository.delete(id);
+
+        if (!deleted) {
+            throw new NotFoundException("Produit introuvable.");
         }
-
-        return productRepository.delete(id);
     }
 
-    private boolean isValidProductData(String name, double price, int stockQuantity) {
+    private void validateProductData(String name, double price, int stockQuantity) {
         if (name == null || name.isBlank()) {
-            return false;
+            throw new ValidationException("Le nom du produit ne peut pas être vide.");
         }
 
         if (price <= 0) {
-            return false;
+            throw new ValidationException("Le prix doit être supérieur à 0.");
         }
 
-        return stockQuantity >= 0;
+        if (stockQuantity < 0) {
+            throw new ValidationException("Le stock ne peut pas être négatif.");
+        }
     }
 
-    private boolean currentUserIsAdmin() {
+    private void requireAdmin() {
         User currentUser = authService.getCurrentUser();
 
-        if (currentUser == null) {
-            return false;
+        if (currentUser == null || !currentUser.isAdmin()) {
+            throw new UnauthorizedException("Action réservée aux administrateurs.");
         }
-
-        return currentUser.isAdmin();
     }
 }

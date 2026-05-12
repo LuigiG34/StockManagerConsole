@@ -167,18 +167,17 @@ public class ConsoleMenu {
 
         int id = inputReader.readInt("ID du produit : ");
 
-        Product product = productService.getProductById(id);
+        try {
+            Product product = productService.getProductById(id);
 
-        if (product == null) {
-            System.out.println("Produit introuvable.");
-            return;
+            System.out.println("ID : " + product.getId());
+            System.out.println("Nom : " + product.getName());
+            System.out.println("Prix : " + product.getPrice() + "€");
+            System.out.println("Stock : " + product.getStockQuantity());
+            System.out.println("Disponible : " + (product.isInStock() ? "Oui" : "Non"));
+        } catch (RuntimeException exception) {
+            System.out.println("Erreur : " + exception.getMessage());
         }
-
-        System.out.println("ID : " + product.getId());
-        System.out.println("Nom : " + product.getName());
-        System.out.println("Prix : " + product.getPrice() + "€");
-        System.out.println("Stock : " + product.getStockQuantity());
-        System.out.println("Disponible : " + (product.isInStock() ? "Oui" : "Non"));
     }
 
     private void createProduct() {
@@ -189,14 +188,12 @@ public class ConsoleMenu {
         double price = inputReader.readDouble("Prix : ");
         int stockQuantity = inputReader.readInt("Quantité en stock : ");
 
-        Product product = productService.createProduct(name, price, stockQuantity);
-
-        if (product == null) {
-            System.out.println("Erreur : produit invalide.");
-            return;
+        try {
+            Product product = productService.createProduct(name, price, stockQuantity);
+            System.out.println("Produit créé : " + product);
+        } catch (RuntimeException exception) {
+            System.out.println("Erreur : " + exception.getMessage());
         }
-
-        System.out.println("Produit créé : " + product);
     }
 
     private void updateProduct() {
@@ -205,27 +202,21 @@ public class ConsoleMenu {
 
         int id = inputReader.readInt("ID du produit à modifier : ");
 
-        Product existingProduct = productService.getProductById(id);
+        try {
+            Product existingProduct = productService.getProductById(id);
 
-        if (existingProduct == null) {
-            System.out.println("Produit introuvable.");
-            return;
+            System.out.println("Produit actuel : " + existingProduct);
+
+            String name = inputReader.readString("Nouveau nom : ");
+            double price = inputReader.readDouble("Nouveau prix : ");
+            int stockQuantity = inputReader.readInt("Nouvelle quantité en stock : ");
+
+            productService.updateProduct(id, name, price, stockQuantity);
+
+            System.out.println("Produit modifié.");
+        } catch (RuntimeException exception) {
+            System.out.println("Erreur : " + exception.getMessage());
         }
-
-        System.out.println("Produit actuel : " + existingProduct);
-
-        String name = inputReader.readString("Nouveau nom : ");
-        double price = inputReader.readDouble("Nouveau prix : ");
-        int stockQuantity = inputReader.readInt("Nouvelle quantité en stock : ");
-
-        boolean updated = productService.updateProduct(id, name, price, stockQuantity);
-
-        if (!updated) {
-            System.out.println("Erreur : modification impossible.");
-            return;
-        }
-
-        System.out.println("Produit modifié.");
     }
 
     private void deleteProduct() {
@@ -234,45 +225,43 @@ public class ConsoleMenu {
 
         int id = inputReader.readInt("ID du produit à supprimer : ");
 
-        Product existingProduct = productService.getProductById(id);
+        try {
+            Product existingProduct = productService.getProductById(id);
 
-        if (existingProduct == null) {
-            System.out.println("Produit introuvable.");
-            return;
+            System.out.println("Produit à supprimer : " + existingProduct);
+
+            String confirmation = inputReader.readString("Confirmer la suppression ? oui/non : ");
+
+            if (!confirmation.equalsIgnoreCase("oui")) {
+                System.out.println("Suppression annulée.");
+                return;
+            }
+
+            productService.deleteProduct(id);
+
+            System.out.println("Produit supprimé.");
+        } catch (RuntimeException exception) {
+            System.out.println("Erreur : " + exception.getMessage());
         }
-
-        System.out.println("Produit à supprimer : " + existingProduct);
-
-        String confirmation = inputReader.readString("Confirmer la suppression ? oui/non : ");
-
-        if (!confirmation.equalsIgnoreCase("oui")) {
-            System.out.println("Suppression annulée.");
-            return;
-        }
-
-        boolean deleted = productService.deleteProduct(id);
-
-        if (!deleted) {
-            System.out.println("Erreur : suppression impossible.");
-            return;
-        }
-
-        System.out.println("Produit supprimé.");
     }
 
     private void showAllUsers() {
         System.out.println();
         System.out.println("=== Liste des utilisateurs ===");
 
-        List<User> users = userService.getAllUsers();
+        try {
+            List<User> users = userService.getAllUsers();
 
-        if (users.isEmpty()) {
-            System.out.println("Aucun utilisateur.");
-            return;
-        }
+            if (users.isEmpty()) {
+                System.out.println("Aucun utilisateur.");
+                return;
+            }
 
-        for (User user : users) {
-            System.out.println(user);
+            for (User user : users) {
+                System.out.println(user);
+            }
+        } catch (RuntimeException exception) {
+            System.out.println("Erreur : " + exception.getMessage());
         }
     }
 
@@ -284,14 +273,12 @@ public class ConsoleMenu {
         String password = inputReader.readString("Mot de passe : ");
         Role role = readRole();
 
-        User user = userService.createUser(email, password, role);
-
-        if (user == null) {
-            System.out.println("Erreur : utilisateur invalide ou email déjà utilisé.");
-            return;
+        try {
+            User user = userService.createUser(email, password, role);
+            System.out.println("Utilisateur créé : " + user);
+        } catch (RuntimeException exception) {
+            System.out.println("Erreur : " + exception.getMessage());
         }
-
-        System.out.println("Utilisateur créé : " + user);
     }
 
     private Role readRole() {
