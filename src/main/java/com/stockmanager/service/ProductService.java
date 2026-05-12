@@ -50,7 +50,7 @@ public class ProductService {
 
         validateProductData(name, price, stockQuantity);
 
-        product.update(name, price, stockQuantity);
+        productRepository.update(id, name, price, stockQuantity);
     }
 
     public void deleteProduct(int id) {

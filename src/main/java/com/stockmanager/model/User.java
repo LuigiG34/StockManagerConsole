@@ -21,6 +21,10 @@ public class User {
         return email;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public Role getRole() {
         return role;
     }
@@ -30,7 +34,7 @@ public class User {
     }
 
     public boolean isAdmin() {
-        return this.role == Role.ADMIN;
+        return role == Role.ADMIN;
     }
 
     @Override
