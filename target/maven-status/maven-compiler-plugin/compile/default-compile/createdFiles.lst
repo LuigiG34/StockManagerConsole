@@ -1,0 +1,15 @@
+com\stockmanager\model\User.class
+com\stockmanager\repository\UserRepository.class
+com\stockmanager\model\Role.class
+com\stockmanager\service\UserService.class
+com\stockmanager\exception\UnauthorizedException.class
+com\stockmanager\exception\ValidationException.class
+com\stockmanager\Main.class
+com\stockmanager\repository\ProductRepository.class
+com\stockmanager\service\ProductService.class
+com\stockmanager\ui\InputReader.class
+com\stockmanager\service\AuthService.class
+com\stockmanager\exception\NotFoundException.class
+com\stockmanager\ui\ConsoleMenu.class
+com\stockmanager\model\Product.class
+com\stockmanager\exception\DuplicateEmailException.class

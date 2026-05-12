@@ -1,0 +1,15 @@
+C:\Users\luigi\OneDrive\Bureau\StockManagerConsole\src\main\java\com\stockmanager\exception\DuplicateEmailException.java
+C:\Users\luigi\OneDrive\Bureau\StockManagerConsole\src\main\java\com\stockmanager\exception\NotFoundException.java
+C:\Users\luigi\OneDrive\Bureau\StockManagerConsole\src\main\java\com\stockmanager\exception\UnauthorizedException.java
+C:\Users\luigi\OneDrive\Bureau\StockManagerConsole\src\main\java\com\stockmanager\exception\ValidationException.java
+C:\Users\luigi\OneDrive\Bureau\StockManagerConsole\src\main\java\com\stockmanager\Main.java
+C:\Users\luigi\OneDrive\Bureau\StockManagerConsole\src\main\java\com\stockmanager\model\Product.java
+C:\Users\luigi\OneDrive\Bureau\StockManagerConsole\src\main\java\com\stockmanager\model\Role.java
+C:\Users\luigi\OneDrive\Bureau\StockManagerConsole\src\main\java\com\stockmanager\model\User.java
+C:\Users\luigi\OneDrive\Bureau\StockManagerConsole\src\main\java\com\stockmanager\repository\ProductRepository.java
+C:\Users\luigi\OneDrive\Bureau\StockManagerConsole\src\main\java\com\stockmanager\repository\UserRepository.java
+C:\Users\luigi\OneDrive\Bureau\StockManagerConsole\src\main\java\com\stockmanager\service\AuthService.java
+C:\Users\luigi\OneDrive\Bureau\StockManagerConsole\src\main\java\com\stockmanager\service\ProductService.java
+C:\Users\luigi\OneDrive\Bureau\StockManagerConsole\src\main\java\com\stockmanager\service\UserService.java
+C:\Users\luigi\OneDrive\Bureau\StockManagerConsole\src\main\java\com\stockmanager\ui\ConsoleMenu.java
+C:\Users\luigi\OneDrive\Bureau\StockManagerConsole\src\main\java\com\stockmanager\ui\InputReader.java
