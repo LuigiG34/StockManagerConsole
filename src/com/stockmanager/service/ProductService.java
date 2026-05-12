@@ -1,15 +1,18 @@
 package com.stockmanager.service;
 
 import com.stockmanager.model.Product;
+import com.stockmanager.model.User;
 import com.stockmanager.repository.ProductRepository;
 
 import java.util.List;
 
 public class ProductService {
     private ProductRepository productRepository;
+    private AuthService authService;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, AuthService authService) {
         this.productRepository = productRepository;
+        this.authService = authService;
     }
 
     public List<Product> getAllProducts() {
@@ -21,15 +24,11 @@ public class ProductService {
     }
 
     public Product createProduct(String name, double price, int stockQuantity) {
-        if (name == null || name.isBlank()) {
+        if (!currentUserIsAdmin()) {
             return null;
         }
 
-        if (price <= 0) {
-            return null;
-        }
-
-        if (stockQuantity < 0) {
+        if (!isValidProductData(name, price, stockQuantity)) {
             return null;
         }
 
@@ -37,21 +36,17 @@ public class ProductService {
     }
 
     public boolean updateProduct(int id, String name, double price, int stockQuantity) {
+        if (!currentUserIsAdmin()) {
+            return false;
+        }
+
         Product product = productRepository.findById(id);
 
         if (product == null) {
             return false;
         }
 
-        if (name == null || name.isBlank()) {
-            return false;
-        }
-
-        if (price <= 0) {
-            return false;
-        }
-
-        if (stockQuantity < 0) {
+        if (!isValidProductData(name, price, stockQuantity)) {
             return false;
         }
 
@@ -61,6 +56,32 @@ public class ProductService {
     }
 
     public boolean deleteProduct(int id) {
+        if (!currentUserIsAdmin()) {
+            return false;
+        }
+
         return productRepository.delete(id);
+    }
+
+    private boolean isValidProductData(String name, double price, int stockQuantity) {
+        if (name == null || name.isBlank()) {
+            return false;
+        }
+
+        if (price <= 0) {
+            return false;
+        }
+
+        return stockQuantity >= 0;
+    }
+
+    private boolean currentUserIsAdmin() {
+        User currentUser = authService.getCurrentUser();
+
+        if (currentUser == null) {
+            return false;
+        }
+
+        return currentUser.isAdmin();
     }
 }
