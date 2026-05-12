@@ -14,8 +14,8 @@ public class Main {
         ProductRepository productRepository = new ProductRepository();
 
         AuthService authService = new AuthService(userRepository);
-        ProductService productService = new ProductService(productRepository);
-        UserService userService = new UserService(userRepository);
+        ProductService productService = new ProductService(productRepository, authService);
+        UserService userService = new UserService(userRepository, authService);
 
         InputReader inputReader = new InputReader();
 
