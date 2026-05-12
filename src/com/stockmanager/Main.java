@@ -8,8 +8,7 @@ import com.stockmanager.repository.UserRepository;
 import com.stockmanager.service.AuthService;
 import com.stockmanager.service.ProductService;
 import com.stockmanager.service.UserService;
-
-import java.util.Scanner;
+import com.stockmanager.ui.InputReader;
 
 public class Main {
     public static void main(String[] args) {
@@ -20,22 +19,19 @@ public class Main {
         ProductService productService = new ProductService(productRepository);
         UserService userService = new UserService(userRepository);
 
-        Scanner scanner = new Scanner(System.in);
+        InputReader inputReader = new InputReader();
 
         System.out.println("=== Stock Manager Console ===");
         System.out.println("=== Login ===");
 
-        System.out.print("Email: ");
-        String email = scanner.nextLine();
-
-        System.out.print("Password: ");
-        String password = scanner.nextLine();
+        String email = inputReader.readString("Email: ");
+        String password = inputReader.readString("Password: ");
 
         boolean success = authService.login(email, password);
 
         if (!success) {
             System.out.println("Identifiants incorrects.");
-            scanner.close();
+            inputReader.close();
             return;
         }
 
@@ -53,9 +49,13 @@ public class Main {
         }
 
         System.out.println();
-        System.out.println("Test création produit via ProductService...");
+        System.out.println("Test création produit avec InputReader");
 
-        Product newProduct = productService.createProduct("Casque", 79.99, 7);
+        String productName = inputReader.readString("Nom du produit : ");
+        double productPrice = inputReader.readDouble("Prix du produit : ");
+        int productStock = inputReader.readInt("Quantité en stock : ");
+
+        Product newProduct = productService.createProduct(productName, productPrice, productStock);
 
         if (newProduct == null) {
             System.out.println("Erreur lors de la création du produit.");
@@ -63,33 +63,22 @@ public class Main {
             System.out.println("Produit créé : " + newProduct);
         }
 
-        System.out.println();
-        System.out.println("Liste des produits après création :");
-
-        for (Product product : productService.getAllProducts()) {
-            System.out.println(product);
-        }
-
         if (currentUser.isAdmin()) {
             System.out.println();
-            System.out.println("Test création utilisateur via UserService...");
+            System.out.println("Test création utilisateur admin");
 
-            User newUser = userService.createUser("test@test.com", "test123", Role.USER);
+            String newUserEmail = inputReader.readString("Email du nouvel utilisateur : ");
+            String newUserPassword = inputReader.readString("Mot de passe du nouvel utilisateur : ");
+
+            User newUser = userService.createUser(newUserEmail, newUserPassword, Role.USER);
 
             if (newUser == null) {
                 System.out.println("Erreur lors de la création de l'utilisateur.");
             } else {
                 System.out.println("Utilisateur créé : " + newUser);
             }
-
-            System.out.println();
-            System.out.println("Liste des utilisateurs :");
-
-            for (User user : userService.getAllUsers()) {
-                System.out.println(user);
-            }
         }
 
-        scanner.close();
+        inputReader.close();
     }
 }
