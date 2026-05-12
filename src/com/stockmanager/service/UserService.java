@@ -8,16 +8,26 @@ import java.util.List;
 
 public class UserService {
     private UserRepository userRepository;
+    private AuthService authService;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, AuthService authService) {
         this.userRepository = userRepository;
+        this.authService = authService;
     }
 
     public List<User> getAllUsers() {
+        if (!currentUserIsAdmin()) {
+            return List.of();
+        }
+
         return userRepository.findAll();
     }
 
     public User createUser(String email, String password, Role role) {
+        if (!currentUserIsAdmin()) {
+            return null;
+        }
+
         if (email == null || email.isBlank()) {
             return null;
         }
@@ -35,5 +45,15 @@ public class UserService {
         }
 
         return userRepository.create(email, password, role);
+    }
+
+    private boolean currentUserIsAdmin() {
+        User currentUser = authService.getCurrentUser();
+
+        if (currentUser == null) {
+            return false;
+        }
+
+        return currentUser.isAdmin();
     }
 }
